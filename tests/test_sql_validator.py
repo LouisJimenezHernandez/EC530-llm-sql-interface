@@ -44,7 +44,7 @@ def test_returns_true_if_select_query(validator, query):
     [
         "DROP TABLE pipelines",
         "DELETE FROM pipelines",
-        "CREATE INDEX idx_pipelines on pipelines(state)",
+        "CREATE INDEX idx_pipelines on pipelines(state)"
     ]
 )
 def test_return_error_if_non_select_query(validator, query):
