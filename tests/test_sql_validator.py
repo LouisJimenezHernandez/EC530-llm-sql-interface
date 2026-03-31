@@ -53,29 +53,31 @@ def test_return_error_if_non_select_query(validator, query):
     assert "Only SELECT queries are allowed" in error 
 
 @pytest.mark.parametrize(
-    "query",
+    "query, table",
     [
-       "SELECT * FROM twice",
-        "SELECT id, name FROM underscores",
-        "SELECT name from nmixx",
-        "SELECT daily_oil_flow FROM jvb"
+        ("SELECT * FROM twice", "twice"),
+        ("SELECT id, name FROM underscores", "underscores"),
+        ("SELECT name from nmixx", "nmixx"),
+        ("SELECT daily_oil_flow FROM jvb", "jvb")
     ]
 )
-def test_return_error_if_unknown_table(validator, query):
+def test_return_error_if_unknown_table(validator, query, table):
     is_valid, error = validator.validate(query)
     assert is_valid is False
-    assert "Unknown tables detected" in error 
+    assert "Unknown table detected: " in error
+    assert table in error 
 
 @pytest.mark.parametrize(
-    "query",
+    "query, column",
     [
-       "SELECT songs FROM pipelines",
-        "SELECT friends, name FROM facilities",
-        "SELECT dracula from pipelines",
-        "SELECT legend_changers FROM pipelines"
+        ("SELECT songs FROM pipelines", "songs"),
+        ("SELECT friends, name FROM facilities", "friends"),
+        ("SELECT dracula from pipelines", "dracula"),
+        ("SELECT legend_changers FROM pipelines", "legend_changers")
     ]
 )
-def test_return_error_if_unknown_column(validator, query):
+def test_return_error_if_unknown_column(validator, query, column):
     is_valid, error = validator.validate(query)
     assert is_valid is False
-    assert "Unknown columns detected" in error 
+    assert "Unknown column detected: " in error
+    assert column in error 
