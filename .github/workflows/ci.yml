@@ -25,4 +25,4 @@ jobs:
       - name: Run SQL validator tests
         env:
           PYTHONPATH: .
-        run: pytest tests/test_sql_validator.py tests/test_query_service.py -v
+        run: pytest tests/test_sql_validator.py tests/test_query_service.py tests/test_csv_loader.py -v

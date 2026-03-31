@@ -36,36 +36,45 @@ class MockSchemaManager:
     
 class TestStep1_CreateNewTable:
 
-    def test_returns_table_created_rows_inserted_if_table_not_exist(self):
+    def test_returns_table_created_rows_inserted_if_table_not_exist(self, tmp_path):
+        csv_file = tmp_path / "horses.csv"
+        csv_file.write_text("name,g1_wins\nDaitaku Helios,2\nMejiro Palmer,2\n")
+
         db = MockDB()
         schema_manager = MockSchemaManager(table_exists=False)
         loader = CSVLoader(db, schema_manager)
 
-        loader.load_csv("fake_path.csv")
+        loader.load_csv(str(csv_file))
 
         assert db.created_table is True
         assert db.inserted_rows is True
 
 class TestStep2_AppendMatchingSchema:
 
-    def test_return_row_insertion_no_table_created_if_schema_matches(self):
+    def test_return_row_insertion_no_table_created_if_schema_matches(self, tmp_path):
+        csv_file = tmp_path / "horses.csv"
+        csv_file.write_text("name,g1_wins\nDaitaku Helios,2\nMejiro Palmer,2\n")
+
         db = MockDB()
         schema_manager = MockSchemaManager(table_exists=True, compare_result="match")
         loader = CSVLoader(db, schema_manager)
 
-        loader.load_csv("fake_path.csv")
+        loader.load_csv(str(csv_file))
 
         assert db.created_table is False
         assert db.inserted_rows is True
         
 class TestStep3_RejectMismatchedSchema:
 
-    def test_return_no_row_insertion_no_table_created_if_schema_mismatches(self):
+    def test_return_no_row_insertion_no_table_created_if_schema_mismatches(self, tmp_path):
+        csv_file = tmp_path / "horses.csv"
+        csv_file.write_text("name,g1_wins\nDaitaku Helios,2\nMejiro Palmer,2\n")
+
         db = MockDB()
         schema_manager = MockSchemaManager(table_exists=True, compare_result="mismatch")
         loader = CSVLoader(db, schema_manager)
 
-        loader.load_csv("fake_path.csv")
+        loader.load_csv(str(csv_file))
 
         assert db.created_table is False
         assert db.inserted_rows is False
