@@ -19,20 +19,22 @@ class SQLValidator:
         if not self._is_select_query(sql_query):
             return False, "Only SELECT queries are allowed"
 
-        schema = self.schema_manager.get_schema()
+        schema = self.schema_manager.get_schema() #Extract Schema
 
-        tables = self._extract_tables(sql_query)
+        #Table Logic Handled
+        tables = self._extract_tables(sql_query) #Extract Table
         if not tables:
             return False, "Invalid query: missing FROM clause"
 
         table = tables[0]  # assume single-table for now
 
         if table not in schema:
-            return False, f"Unknown table detected: {table}"
+            return False, f"Unknown table detected: {table}" #Error if unknown table
 
+        #Column Logic Handled
         columns = self._extract_columns(sql_query)
 
-        if columns != ["*"]:
+        if columns != ["*"]: #Only check if not a select * query
             valid_columns = schema[table]["columns"].keys()
 
             for col in columns:
