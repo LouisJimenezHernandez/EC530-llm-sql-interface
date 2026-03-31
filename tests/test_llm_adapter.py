@@ -2,16 +2,26 @@ import pytest
 from src.llm.llm_adapter import LLMAdapter
 
 
+class MockResponse:
+    def __init__(self, text):
+        self.output_text = text
+
+
+class MockResponsesAPI:
+    def __init__(self, text):
+        self.text = text
+        self.called = False
+        self.last_input = None
+
+    def create(self, model, input):
+        self.called = True
+        self.last_input = input
+        return MockResponse(self.text)
+
+
 class MockLLMClient:
     def __init__(self, response="SELECT name FROM pipelines"):
-        self.response = response
-        self.called = False
-        self.last_prompt = None
-
-    def generate(self, prompt):
-        self.called = True
-        self.last_prompt = prompt
-        return self.response
+        self.responses = MockResponsesAPI(response)
     
 class TestStep1_BuildPrompt:
     def test_prompt_contains_user_query(self):
@@ -70,7 +80,7 @@ class TestStep2_GenerateSQL:
 
         adapter.generate_sql("Show pipeline names", schema)
 
-        assert client.called is True
+        assert client.responses.called is True
 
     def test_generate_sql_returns_llm_response(self):
         client = MockLLMClient(response="SELECT name FROM pipelines")
