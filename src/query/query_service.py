@@ -6,16 +6,34 @@ class QueryService:
         llm_adapter: LLM adapter
         schema_manager: provides schema info
         """
-        pass
+        self.db = db
+        self.validator = validator
+        self.llm_adapter = llm_adapter
+        self.schema_manager = schema_manager
 
     def handle_nl_query(self, user_input: str) -> str:
         """
         Takes natural language input and returns formatted results.
         """
-        pass
+        schema = self.schema_manager.get_schema()
+        sql_query = self.llm_adapter.generate_sql(user_input, schema)
+
+        is_valid, error = self.validator.validate(sql_query)
+
+        if not is_valid:
+            return error
+
+        results = self.db.execute_query(sql_query)
+        return results
 
     def handle_sql_query(self, sql_query: str) -> str:
         """
         Takes raw SQL input (for testing phase) and returns results.
         """
-        pass
+        is_valid, error = self.validator.validate(sql_query)
+
+        if not is_valid:
+            return error
+
+        results = self.db.execute_query(sql_query)
+        return results
