@@ -5,26 +5,6 @@
 This project implements a **natural language interface for querying a SQLite database**.
 Users can load CSV data, ask questions in plain English, and receive results generated through SQL queries.
 
-### Architecture
-
-The system is designed with a **modular, layered architecture**:
-
-```
-User (CLI)
-   ↓
-CLIInterface
-   ↓
-QueryService
-   ↓
- ┌───────────────┬───────────────┐
- ↓               ↓               ↓
-LLMAdapter   SQLValidator   SchemaManager
-                                ↓
-                            Database (SQLite)
-                                ↑
-                            CSVLoader
-```
-
 ### Module Responsibilities
 
 * **Database**
