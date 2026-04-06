@@ -54,6 +54,7 @@ class SQLValidator:
 
         after_from = sql_lower.split(" from ", 1)[1]
         table = after_from.strip().split()[0]
+        table = table.strip('";\'`')
 
         return [table]
 
@@ -66,6 +67,6 @@ class SQLValidator:
         select_part = sql_lower.split(" from ", 1)[0]
         columns_text = select_part.replace("select", "", 1).strip()
 
-        columns = [col.strip() for col in columns_text.split(",")]
+        columns = [col.strip().strip('";\'`') for col in columns_text.split(",")]
 
         return columns
